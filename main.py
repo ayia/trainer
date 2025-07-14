@@ -42,14 +42,39 @@ Visit our docs for all our [model uploads](https://docs.unsloth.ai/get-started/a
 """### Unsloth"""
 
 import os
-os.environ["TORCH_CUDA_ARCH_LIST"] = "sm_90"  # Force compatibility mode
-
-# Then your existing imports
-from unsloth import FastLanguageModel
 import torch
 
-print(torch.cuda.is_available())  # Should be True
-print(torch.cuda.get_device_capability(0))  # Should show (9, 0)
+# 1. Force CPU for rotary embeddings
+os.environ["UNSLOTH_OFFLOAD_ROPE"] = "1"
+
+# 2. Force FP32 precision as fallback
+os.environ["UNSLOTH_FORCE_FP32"] = "1"
+
+# 3. Disable incompatible xFormers
+os.environ["XFORMERS_DISABLED"] = "1"
+
+# 4. Set CUDA arch compatibility
+os.environ["TORCH_CUDA_ARCH_LIST"] = "sm_90;sm_89;sm_86;sm_80"
+
+# 5. Verify environment
+print("FORCED CONFIG:")
+print(f"UNSLOTH_OFFLOAD_ROPE: {os.getenv('UNSLOTH_OFFLOAD_ROPE')}")
+print(f"UNSLOTH_FORCE_FP32: {os.getenv('UNSLOTH_FORCE_FP32')}")
+print(f"XFORMERS_DISABLED: {os.getenv('XFORMERS_DISABLED')}")
+print(f"TORCH_CUDA_ARCH_LIST: {os.getenv('TORCH_CUDA_ARCH_LIST')}")
+
+# Rest of your imports below
+from unsloth import FastLanguageModel
+
+# After imports
+print("\nGPU STATUS:")
+print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA device count: {torch.cuda.device_count()}")
+if torch.cuda.is_available():
+    print(f"Current device: {torch.cuda.current_device()}")
+    print(f"Device name: {torch.cuda.get_device_name(0)}")
+    print(f"Device capability: {torch.cuda.get_device_capability(0)}")
+    print(f"PyTorch CUDA version: {torch.version.cuda}")
 
 
 fourbit_models = [
