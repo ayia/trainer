@@ -41,6 +41,10 @@ Visit our docs for all our [model uploads](https://docs.unsloth.ai/get-started/a
 
 """### Unsloth"""
 
+import os
+os.environ["TORCH_CUDA_ARCH_LIST"] = "sm_90"  # Add this at the VERY TOP
+
+# Then your existing imports
 from unsloth import FastLanguageModel
 import torch
 
