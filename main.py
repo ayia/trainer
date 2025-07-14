@@ -42,26 +42,45 @@ Visit our docs for all our [model uploads](https://docs.unsloth.ai/get-started/a
 """### Unsloth"""
 
 import os
-import torch
+os.environ["UNSLOTH_OFFLOAD_ROPE"] = "1"  # Offload rotary embeddings to CPU
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # Synchronous CUDA error reporting
+os.environ["TORCH_USE_CUDA_DSA"] = "1"    # Enable device-side assertions
+os.environ["NVIDIA_DEBUG"] = "1"          # NVIDIA driver debug info
 
-# 1. Force CPU for rotary embeddings
-os.environ["UNSLOTH_OFFLOAD_ROPE"] = "1"
-
-# 2. Force FP32 precision as fallback
+# Force FP32 precision for compatibility
 os.environ["UNSLOTH_FORCE_FP32"] = "1"
 
-# 3. Disable incompatible xFormers
+# Disable xFormers explicitly
 os.environ["XFORMERS_DISABLED"] = "1"
 
-# 4. Set CUDA arch compatibility
-os.environ["TORCH_CUDA_ARCH_LIST"] = "sm_90;sm_89;sm_86;sm_80"
+# Set broader CUDA architecture compatibility
+os.environ["TORCH_CUDA_ARCH_LIST"] = "sm_90;sm_89;sm_86;sm_80;sm_75"
 
-# 5. Verify environment
-print("FORCED CONFIG:")
+# Verify environment
+print("="*50)
+print("ENVIRONMENT CONFIGURATION:")
 print(f"UNSLOTH_OFFLOAD_ROPE: {os.getenv('UNSLOTH_OFFLOAD_ROPE')}")
 print(f"UNSLOTH_FORCE_FP32: {os.getenv('UNSLOTH_FORCE_FP32')}")
 print(f"XFORMERS_DISABLED: {os.getenv('XFORMERS_DISABLED')}")
 print(f"TORCH_CUDA_ARCH_LIST: {os.getenv('TORCH_CUDA_ARCH_LIST')}")
+print("="*50)
+
+# Additional diagnostics
+import torch
+print("\nTORCH/CUDA STATUS:")
+print(f"PyTorch version: {torch.__version__}")
+print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA version: {torch.version.cuda}")
+if torch.cuda.is_available():
+    print(f"Device count: {torch.cuda.device_count()}")
+    print(f"Current device: {torch.cuda.current_device()}")
+    print(f"Device name: {torch.cuda.get_device_name(0)}")
+    print(f"Device capability: {torch.cuda.get_device_capability(0)}")
+    print(f"CUDA arch list: {torch.cuda.get_arch_list()}")
+print("="*50)
+
+# Rest of your imports...
+from unsloth import FastLanguageModel
 
 # Rest of your imports below
 from unsloth import FastLanguageModel
