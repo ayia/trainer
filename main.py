@@ -112,10 +112,9 @@ fourbit_models = [
 ] # More models at https://huggingface.co/unsloth
 
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "unsloth/Qwen3-14B",
+  model_name = "unsloth/Qwen3-1.7B-unsloth-bnb-4bit",
     max_seq_length = 2048,
-    load_in_4bit = False,   # Disable quantization
-    device_map = "cpu",      # Force CPU execution
+    load_in_4bit = True,
 )
 
 """We now add LoRA adapters so we only need to update 1 to 10% of all parameters!"""
