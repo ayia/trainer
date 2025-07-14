@@ -42,11 +42,15 @@ Visit our docs for all our [model uploads](https://docs.unsloth.ai/get-started/a
 """### Unsloth"""
 
 import os
-os.environ["TORCH_CUDA_ARCH_LIST"] = "sm_90"  # Add this at the VERY TOP
+os.environ["TORCH_CUDA_ARCH_LIST"] = "sm_90"  # Force compatibility mode
 
 # Then your existing imports
 from unsloth import FastLanguageModel
 import torch
+
+print(torch.cuda.is_available())  # Should be True
+print(torch.cuda.get_device_capability(0))  # Should show (9, 0)
+
 
 fourbit_models = [
     "unsloth/Qwen3-1.7B-unsloth-bnb-4bit", # Qwen 14B 2x faster
