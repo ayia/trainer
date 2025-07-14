@@ -113,11 +113,9 @@ fourbit_models = [
 
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name = "unsloth/Qwen3-14B",
-    max_seq_length = 2048,   # Context length - can be longer, but uses more memory
-    load_in_4bit = True,     # 4bit uses much less memory
-    load_in_8bit = False,    # A bit more accurate, uses 2x memory
-    full_finetuning = False, # We have full finetuning now!
-    # token = "hf_...",      # use one if using gated models
+    max_seq_length = 2048,
+    load_in_4bit = False,   # Disable quantization
+    device_map = "cpu",      # Force CPU execution
 )
 
 """We now add LoRA adapters so we only need to update 1 to 10% of all parameters!"""
