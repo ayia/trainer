@@ -95,7 +95,7 @@ Qwen3 has both reasoning and a non reasoning mode. So, we should use 2 datasets:
 """
 
 from datasets import load_dataset
-reasoning_dataset = load_dataset("csv", data_files="/qa_dataset_ollama.csv", split="train")
+reasoning_dataset = load_dataset("csv", data_files="./qa_dataset_ollama.csv", split="train")
 non_reasoning_dataset = load_dataset("mlabonne/FineTome-100k", split = "train")
 
 """Let's see the structure of both datasets:"""
